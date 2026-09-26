@@ -1,0 +1,70 @@
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+}
+
+.label {
+  color: #6f87a6;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.15px;
+}
+
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 48px;
+  overflow: hidden;
+  border: 1px solid #b9bec5;
+  border-radius: 13px;
+  background: #f2f5ff;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+
+  &:focus-within {
+    border-color: #527ba8;
+    box-shadow: 0 0 0 3px rgba(43, 87, 132, 0.12);
+  }
+}
+
+.input {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  padding: 0 15px;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: #243b59;
+  font: inherit;
+  font-size: 15px;
+
+  &::placeholder {
+    color: #9aa9bc;
+  }
+}
+
+.startAdornment,
+.endAdornment {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  color: #91a5bf;
+}
+
+.startAdornment {
+  margin-left: 14px;
+
+  & + .input {
+    padding-left: 10px;
+  }
+}
+
+.endAdornment {
+  height: 100%;
+  margin-right: 11px;
+}

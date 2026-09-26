@@ -1,0 +1,133 @@
+
+.loginPage {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  place-items: center;
+  padding: 24px 16px;
+  background: rgb(30 141 255 / 53%);
+  color: #102f5f;
+}
+
+.loginCard {
+  width: min(100%, 434px);
+  padding: 38px 39px 32px;
+  border: 1px solid #ffffff;
+  border-radius: 17px;
+  background: #fff;
+}
+
+.loginBrand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 44px;
+  text-align: center;
+}
+
+.loginLogo {
+  width: 82px;
+  height: 82px;
+  object-fit: contain;
+}
+
+.loginTitle {
+  margin-top: 18px;
+  color: #123e7b;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.loginDescription {
+  margin-top: 16px;
+  color: #1e4172;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.loginRegister {
+  display: flex;
+  justify-content: center;
+  margin-top: 19px;
+  padding: 18px 0 0;
+  border-top: 1px solid #edf0f4;
+  color: #1754a0;
+  font-size: 14px;
+  font-weight: 600;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.loginHome {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+
+  a {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 15px;
+    border: 1px solid #d8e0e9;
+    border-radius: 9px;
+    color: #47617f;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background 150ms ease, border-color 150ms ease;
+
+    &:hover {
+      border-color: #a9bad0;
+      background: #f7f9fc;
+    }
+  }
+}
+
+:global(.login-submit) {
+  transition: background 150ms ease, transform 150ms ease;
+
+  &:hover {
+    background: #1d426d !important;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+@media (max-width: 480px) {
+  .loginPage {
+    padding: 16px 12px;
+  }
+
+  .loginCard {
+    padding: 30px 24px 26px;
+  }
+
+  .loginBrand {
+    margin-bottom: 34px;
+  }
+
+  .loginLogo {
+    width: 66px;
+    height: 66px;
+  }
+
+  .loginTitle {
+    margin-top: 18px;
+    font-size: 15px;
+  }
+}

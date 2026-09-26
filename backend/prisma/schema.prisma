@@ -1,0 +1,320 @@
+generator client {
+  provider        = "prisma-client"
+  output          = "../src/generated/prisma"
+  previewFeatures = ["partialIndexes"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model ban {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ma_ban             String               @unique @db.VarChar
+  ten_ban            String               @db.VarChar
+  ngay_tao           DateTime             @default(now()) @db.Timestamptz(6)
+  ngay_cap_nhat      DateTime             @default(now()) @db.Timestamptz(6)
+  phan_cong_nhiem_vu phan_cong_nhiem_vu[]
+}
+
+model buoi_sinh_hoat {
+  id                 String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_chi_doan        String             @db.Uuid
+  ngay_sinh_hoat     DateTime           @db.Date
+  chu_de             String?            @db.VarChar
+  ngay_tao           DateTime           @default(now()) @db.Timestamptz(6)
+  trang_thai_lop_hoc trang_thai_lop_hoc @default(chuan_bi)
+  chi_doan           chi_doan           @relation(fields: [id_chi_doan], references: [id], onUpdate: NoAction, map: "buoi_sinh_hoat_chi_doan_id_fkey")
+  diem_danh          diem_danh[]
+}
+
+model chi_doan {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ma_chi_doan        String               @unique @db.VarChar
+  ten_chi_doan       String               @db.VarChar
+  id_nganh           String               @db.Uuid
+  ngay_tao           DateTime             @default(now()) @db.Timestamptz(6)
+  ngay_cap_nhat      DateTime             @default(now()) @db.Timestamptz(6)
+  buoi_sinh_hoat     buoi_sinh_hoat[]
+  nganh              nganh                @relation(fields: [id_nganh], references: [id], onUpdate: NoAction, map: "fk_chidoan_nganh")
+  doan_sinh          doan_sinh[]
+  doi_nhom           doi_nhom[]
+  phan_cong_nhiem_vu phan_cong_nhiem_vu[]
+}
+
+model diem_danh {
+  id                String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_buoi_sinh_hoat String               @db.Uuid
+  id_doan_sinh      String               @unique @db.Uuid
+  thoi_gian_quet    DateTime             @default(now()) @db.Timestamptz(6)
+  trang_thai        trang_thai_tham_gia?
+  buoi_sinh_hoat    buoi_sinh_hoat       @relation(fields: [id_buoi_sinh_hoat], references: [id], onUpdate: NoAction, map: "diem_danh_buoi_sinh_hoat_id_fkey")
+  doan_sinh         doan_sinh            @relation(fields: [id_doan_sinh], references: [id], onUpdate: NoAction, map: "diem_danh_doan_sinh_id_fkey")
+
+  @@unique([id_buoi_sinh_hoat, id_doan_sinh], map: "diem_danh_buoi_sinh_hoat_id_doan_sinh_id_key")
+}
+
+model doan_sinh {
+  id                                         String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ma_doan_sinh                               String                    @unique @db.VarChar
+  id_chi_doan                                String?                   @db.Uuid
+  ten_thanh                                  String?                   @db.VarChar
+  ho_ten                                     String                    @db.VarChar
+  ngay_sinh                                  DateTime                  @db.Date
+  gioi_tinh                                  gioi_tinh_enum
+  so_dien_thoai                              String?                   @db.VarChar
+  dia_chi                                    String?                   @db.VarChar
+  trang_thai                                 trang_thai_sinh_hoat_enum @default(dang_sinh_hoat)
+  ngay_tao                                   DateTime                  @default(now()) @db.Timestamptz(6)
+  ngay_cap_nhat                              DateTime                  @default(now()) @db.Timestamptz(6)
+  id_doi_nhom                                String?                   @db.Uuid
+  diem_danh                                  diem_danh?
+  chi_doan                                   chi_doan?                 @relation(fields: [id_chi_doan], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "fk_doansinh_chidoan")
+  doi_nhom_doan_sinh_id_doi_nhomTodoi_nhom   doi_nhom?                 @relation("doan_sinh_id_doi_nhomTodoi_nhom", fields: [id_doi_nhom], references: [id], onUpdate: NoAction, map: "fk_doansinh_doinhom")
+  doan_sinh_phu_huynh                        doan_sinh_phu_huynh[]
+  doi_nhom_doi_nhom_id_doi_truongTodoan_sinh doi_nhom[]                @relation("doi_nhom_id_doi_truongTodoan_sinh")
+  nhan_su                                    nhan_su[]
+}
+
+model doan_sinh_phu_huynh {
+  id               String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_doan_sinh     String           @db.Uuid
+  id_phu_huynh     String           @db.Uuid
+  moi_quan_he      moi_quan_he_enum
+  is_lien_he_chinh Boolean          @default(false)
+  ngay_tao         DateTime         @default(now()) @db.Timestamptz(6)
+  ngay_cap_nhat    DateTime         @default(now()) @db.Timestamptz(6)
+  doan_sinh        doan_sinh        @relation(fields: [id_doan_sinh], references: [id], onUpdate: NoAction)
+  phu_huynh        phu_huynh        @relation(fields: [id_phu_huynh], references: [id], onUpdate: NoAction)
+
+  @@unique([id_doan_sinh, id_phu_huynh])
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model doi_nhom {
+  id                                          String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ten_doi                                     String?     @db.VarChar
+  id_chi_doan                                 String      @db.Uuid
+  id_doi_truong                               String?     @db.Uuid
+  ngay_tao                                    DateTime    @default(now()) @db.Timestamptz(6)
+  ngay_cap_nhat                               DateTime    @default(now()) @db.Timestamptz(6)
+  ma_doi                                      String      @db.VarChar
+  doan_sinh_doan_sinh_id_doi_nhomTodoi_nhom   doan_sinh[] @relation("doan_sinh_id_doi_nhomTodoi_nhom")
+  chi_doan                                    chi_doan    @relation(fields: [id_chi_doan], references: [id], onUpdate: NoAction, map: "doi_nhom_chi_doan_id_fkey")
+  doan_sinh_doi_nhom_id_doi_truongTodoan_sinh doan_sinh?  @relation("doi_nhom_id_doi_truongTodoan_sinh", fields: [id_doi_truong], references: [id], onUpdate: NoAction, map: "fk_doinhom_doitruong")
+
+  @@unique([id_chi_doan, ten_doi], map: "doi_nhom_chi_doan_id_ten_doi_key")
+}
+
+model nganh {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ma_nganh           String               @unique @db.VarChar
+  ten_nganh          String               @db.VarChar
+  ngay_tao           DateTime             @default(now()) @db.Timestamptz(6)
+  ngay_cap_nhat      DateTime             @default(now()) @db.Timestamptz(6)
+  thu_tu             Int                  @db.SmallInt
+  khau_hieu          String?              @db.VarChar
+  chi_doan           chi_doan[]
+  phan_cong_nhiem_vu phan_cong_nhiem_vu[]
+}
+
+model nhan_su {
+  id                 String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ma_nhan_su         String                    @unique @db.VarChar
+  loai_nhan_su       loai_nhan_su_enum
+  id_doan_sinh_goc   String?                   @db.Uuid
+  ten_thanh          String?                   @db.VarChar
+  ho_ten             String                    @db.VarChar
+  ngay_sinh          DateTime?                 @db.Date
+  gioi_tinh          gioi_tinh_enum
+  so_dien_thoai      String?                   @db.VarChar
+  dia_chi            String?                   @db.VarChar
+  trang_thai         trang_thai_sinh_hoat_enum @default(dang_sinh_hoat)
+  ngay_tao           DateTime                  @default(now()) @db.Timestamptz(6)
+  ngay_cap_nhat      DateTime                  @default(now()) @db.Timestamptz(6)
+  id_tai_khoan       String?                   @unique @db.Uuid
+  doan_sinh          doan_sinh?                @relation(fields: [id_doan_sinh_goc], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "fk_nhansu_doansinhgoc")
+  tai_khoan          tai_khoan?                @relation(fields: [id_tai_khoan], references: [id], onUpdate: NoAction, map: "nhan_su_id_tai_khoan_fkey1")
+  phan_cong_nhiem_vu phan_cong_nhiem_vu[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model nien_khoa {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ma_nien_khoa       String               @unique @db.VarChar
+  ngay_bat_dau       DateTime?            @db.Date
+  ngay_ket_thuc      DateTime?            @db.Date
+  chu_de             String?              @db.VarChar
+  ngay_tao           DateTime             @default(now()) @db.Timestamptz(6)
+  ngay_cap_nhat      DateTime             @default(now()) @db.Timestamptz(6)
+  phan_cong_nhiem_vu phan_cong_nhiem_vu[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model phan_cong_nhiem_vu {
+  id            String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  id_nhan_su    String                    @db.Uuid
+  id_vai_tro    String                    @db.Uuid
+  id_nien_khoa  String                    @db.Uuid
+  pham_vi       pham_vi_enum
+  id_nganh      String?                   @db.Uuid
+  id_chi_doan   String?                   @db.Uuid
+  id_ban        String?                   @db.Uuid
+  trang_thai    trang_thai_phan_cong_enum @default(dang_phan_cong)
+  ghi_chu       String?                   @db.VarChar
+  ngay_tao      DateTime                  @default(now()) @db.Timestamptz(6)
+  ngay_cap_nhat DateTime                  @default(now()) @db.Timestamptz(6)
+  ban           ban?                      @relation(fields: [id_ban], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "phan_cong_nhiem_vu_ban_id_fkey")
+  chi_doan      chi_doan?                 @relation(fields: [id_chi_doan], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "phan_cong_nhiem_vu_chi_doan_id_fkey")
+  nganh         nganh?                    @relation(fields: [id_nganh], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "phan_cong_nhiem_vu_nganh_id_fkey")
+  nhan_su       nhan_su                   @relation(fields: [id_nhan_su], references: [id], onUpdate: NoAction, map: "phan_cong_nhiem_vu_nhan_su_id_fkey")
+  nien_khoa     nien_khoa                 @relation(fields: [id_nien_khoa], references: [id], onUpdate: NoAction, map: "phan_cong_nhiem_vu_nien_khoa_id_fkey")
+  vai_tro       vai_tro                   @relation(fields: [id_vai_tro], references: [id], onUpdate: NoAction, map: "phan_cong_nhiem_vu_vai_tro_id_fkey")
+
+  @@unique([id_nhan_su, id_vai_tro, id_nien_khoa, id_ban], map: "uq_phancong_ban", where: raw("(pham_vi = 'ban'::pham_vi_enum)"))
+  @@unique([id_nhan_su, id_vai_tro, id_nien_khoa, id_chi_doan], map: "uq_phancong_chidoan", where: raw("(pham_vi = 'chi_doan'::pham_vi_enum)"))
+  @@unique([id_nhan_su, id_vai_tro, id_nien_khoa, id_nganh], map: "uq_phancong_nganh", where: raw("(pham_vi = 'nganh'::pham_vi_enum)"))
+  @@unique([id_nhan_su, id_vai_tro, id_nien_khoa], map: "uq_phancong_xudoan", where: raw("(pham_vi = 'xu_doan'::pham_vi_enum)"))
+}
+
+model phu_huynh {
+  id                  String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ma_phu_huynh        String                    @unique @db.VarChar
+  ten_thanh           String?                   @db.VarChar
+  ho_ten              String                    @db.VarChar
+  gioi_tinh           gioi_tinh_enum
+  so_dien_thoai       String                    @db.VarChar
+  dia_chi             String?                   @db.VarChar
+  trang_thai          trang_thai_phu_huynh_enum @default(dang_hoat_dong)
+  ngay_tao            DateTime                  @default(now()) @db.Timestamptz(6)
+  ngay_cap_nhat       DateTime                  @default(now()) @db.Timestamptz(6)
+  id_tai_khoan        String?                   @unique @db.Uuid
+  doan_sinh_phu_huynh doan_sinh_phu_huynh[]
+  tai_khoan           tai_khoan?                @relation(fields: [id_tai_khoan], references: [id], onUpdate: NoAction, map: "phu_huynh_id_tai_khoan_fkey1")
+}
+
+model tai_khoan {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ten_tai_khoan   String            @unique(map: "tai_khoan_so_dien_thoai_key")
+  mat_khau        String
+  ngay_khoi_tao   DateTime          @default(now()) @db.Timestamptz(6)
+  nhan_su         nhan_su?
+  phien_dang_nhap phien_dang_nhap[]
+  phu_huynh       phu_huynh?
+
+  @@index([ten_tai_khoan], map: "idx_users_phone")
+}
+
+model vai_tro {
+  id                 String               @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ma_vai_tro         String               @unique @db.VarChar
+  ten_vai_tro        String               @db.VarChar
+  ngay_tao           DateTime             @default(now()) @db.Timestamptz(6)
+  ngay_cap_nhat      DateTime             @default(now()) @db.Timestamptz(6)
+  phan_cong_nhiem_vu phan_cong_nhiem_vu[]
+  vai_tro_pham_vi    vai_tro_pham_vi[]
+}
+
+model vai_tro_pham_vi {
+  id_vai_tro String       @db.Uuid
+  pham_vi    pham_vi_enum
+  vai_tro    vai_tro      @relation(fields: [id_vai_tro], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([id_vai_tro, pham_vi])
+}
+
+model phien_dang_nhap {
+  id             String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  ma_phien       String    @unique
+  tai_khoan_id   String    @db.Uuid
+  ten_thiet_bi   String?
+  dia_chi_ip     String?
+  ngay_dang_nhap DateTime  @default(now()) @db.Timestamptz(6)
+  truy_cap_cuoi  DateTime  @default(now()) @db.Timestamptz(6)
+  ngay_het_han   DateTime  @db.Timestamptz(6)
+  tai_khoan      tai_khoan @relation(fields: [tai_khoan_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([tai_khoan_id], map: "idx_sessions_tai_khoan")
+  @@index([ma_phien], map: "idx_sessions_token")
+}
+
+enum gioi_tinh_enum {
+  nam
+  nu
+  khac
+}
+
+enum loai_nhan_su_enum {
+  du_truong
+  huynh_truong
+  tu_si
+  linh_muc
+}
+
+enum moi_quan_he_enum {
+  cha
+  me
+  nguoi_giam_ho
+  ong
+  ba
+  khac
+}
+
+enum pham_vi_enum {
+  xu_doan
+  nganh
+  chi_doan
+  ban
+  phan_nganh
+}
+
+enum trang_thai_lop_hoc {
+  chuan_bi
+  nghi_hoc
+  da_dien_ra
+}
+
+enum trang_thai_phan_cong_enum {
+  dang_phan_cong
+  tam_ngung
+  ket_thuc
+}
+
+enum trang_thai_phu_huynh_enum {
+  dang_hoat_dong
+  mat_lien_lac
+  qua_doi
+  ngung_theo_doi
+}
+
+enum trang_thai_sinh_hoat_enum {
+  dang_sinh_hoat
+  tam_ngung
+  chuyen_doan
+  ngung_sinh_hoat
+  ly_do_khac
+}
+
+enum trang_thai_tham_gia {
+  co_mat
+  khong_phep
+  co_phep
+}
+
+/// This enum is commented in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+enum vai_tro_enum {
+  CHA_TUYEN_UY
+  XU_DOAN_TRUONG
+  TRO_UY_XU_DOAN
+  PHO_NOI_VU
+  PHO_NGOAI_VU
+  THU_KY
+  THU_QUY
+  TRUONG_NGANH
+  PHO_NGANH
+  TRUONG_BAN
+  PHO_BAN
+  THANH_VIEN_BAN
+  CHU_NHIEM_LOP
+  PHU_LOP
+}
