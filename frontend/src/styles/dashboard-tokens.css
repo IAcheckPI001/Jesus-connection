@@ -1,0 +1,28 @@
+
+
+/* src/styles/dashboard-tokens.css */
+.dashboard-scope {
+  min-height: 100dvh;
+  /* Màu thương hiệu dashboard */
+  --dash-primary: #5932EA;
+  --dash-on-primary: #ffffff;
+
+  /* Nền */
+  --dash-bg-page: #F8F9FF;
+  --dash-bg-card: #ffffff;
+
+  /* Menu */
+  --dash-menu-hover-border: #B9BEC5;
+  --dash-overlay: rgb(15 23 42 / 32%);
+
+  /* Layout */
+  --dash-rail-width: 72px;
+  --dash-sidebar-width: 268px;
+  --dash-sidebar-transition: 0.25s ease-in-out;
+  --dash-radius-card: 24px;
+  --dash-shadow-card: 0 4px 24px rgba(89, 50, 234, 0.06);
+
+  /* Dashboard tự đặt nền và chữ, không phụ thuộc body */
+  background-color: var(--dash-bg-page);
+  color: var(--color-gray-700);
+}
