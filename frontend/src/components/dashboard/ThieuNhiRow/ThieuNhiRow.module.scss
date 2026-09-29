@@ -1,0 +1,29 @@
+.editButton {
+  display: inline-flex;
+  width: var(--dash-edit-button-size);
+  height: var(--dash-edit-button-size);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--dash-radius-round);
+  background: var(--dash-edit-btn-bg);
+  color: var(--dash-on-primary);
+  cursor: pointer;
+}
+
+.editButton:hover,
+.editButton:focus-visible {
+  box-shadow: var(--dash-focus-ring);
+}
+
+.editButton svg {
+  width: var(--dash-search-icon-size);
+  height: var(--dash-search-icon-size);
+}
+
+
+@media (max-width: 1023px) {
+
+  .editButton {
+    display: none;
+  }
+}

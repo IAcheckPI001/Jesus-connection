@@ -59,7 +59,7 @@ model doan_sinh {
   ma_doan_sinh                               String                    @unique @db.VarChar
   id_chi_doan                                String?                   @db.Uuid
   ten_thanh                                  String?                   @db.VarChar
-  ho_ten                                     String                    @db.VarChar
+  ho                                         String                    @db.VarChar
   ngay_sinh                                  DateTime                  @db.Date
   gioi_tinh                                  gioi_tinh_enum
   so_dien_thoai                              String?                   @db.VarChar
@@ -68,6 +68,7 @@ model doan_sinh {
   ngay_tao                                   DateTime                  @default(now()) @db.Timestamptz(6)
   ngay_cap_nhat                              DateTime                  @default(now()) @db.Timestamptz(6)
   id_doi_nhom                                String?                   @db.Uuid
+  ten                                        String                    @db.VarChar
   diem_danh                                  diem_danh?
   chi_doan                                   chi_doan?                 @relation(fields: [id_chi_doan], references: [id], onDelete: Restrict, onUpdate: NoAction, map: "fk_doansinh_chidoan")
   doi_nhom_doan_sinh_id_doi_nhomTodoi_nhom   doi_nhom?                 @relation("doan_sinh_id_doi_nhomTodoi_nhom", fields: [id_doi_nhom], references: [id], onUpdate: NoAction, map: "fk_doansinh_doinhom")

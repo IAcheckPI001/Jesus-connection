@@ -10,6 +10,58 @@
   /* Nền */
   --dash-bg-page: #F8F9FF;
   --dash-bg-card: #ffffff;
+  --dash-success-bg: #DEFFED;
+
+  /* Nội dung và điều khiển */
+  --dash-text: var(--color-gray-700);
+  --dash-text-muted: var(--color-gray-500);
+  --dash-border: var(--color-gray-300);
+  --dash-divider: var(--color-gray-100);
+  --dash-search-bg: #F8FAFF;
+  --dash-search-border-strong: var(--color-gray-500);
+  --dash-page-btn-bg: var(--color-gray-100);
+  --dash-page-btn-text: var(--color-gray-700);
+  --dash-table-row-border: var(--dash-divider);
+  --dash-table-row-hover-bg: var(--dash-search-bg);
+  /* Ước lượng theo ảnh mẫu. */
+  --dash-edit-btn-bg: #3FA7F5;
+  --dash-stat-icon-bg: var(--dash-success-bg);
+  --dash-stat-icon-color: var(--color-success);
+  --dash-radius-control: 8px;
+  --dash-radius-page-button: 4px;
+  --dash-radius-checkbox: 4px;
+  --dash-radius-round: 9999px;
+  --dash-shadow-popover: var(--shadow-md);
+  --dash-z-popover: 20;
+  --dash-focus-ring: 0 0 0 3px rgb(89 50 234 / 20%);
+
+  /* Kích thước controls */
+  --dash-control-height: 36px;
+  --dash-search-icon-size: 16px;
+  --dash-clear-button-size: 24px;
+  --dash-stat-icon-size: 52px;
+  --dash-stat-icon-glyph-size: 24px;
+  /* Kích thước mobile và FAB được ước lượng theo ảnh mẫu. */
+  --dash-stat-icon-size-mobile: 34px;
+  --dash-stat-icon-glyph-size-mobile: 18px;
+  --dash-fab-size: 52px;
+  --dash-stat-padding: var(--space-5);
+  --dash-stat-skeleton-width: 36px;
+  --dash-stat-skeleton-height: 20px;
+  --dash-pagination-button-size: 28px;
+  --dash-edit-button-size: 22px;
+  --dash-pagination-icon-size: 16px;
+  --dash-picker-panel-width: 220px;
+  --dash-picker-list-max-height: 184px;
+  --dash-picker-empty-height: 100px;
+  --dash-picker-title-skeleton-width: 88px;
+  --dash-picker-title-skeleton-height: 16px;
+  --dash-picker-row-height: 28px;
+  --dash-checkbox-size: 16px;
+  --dash-checkbox-mark-top: 1px;
+  --dash-checkbox-mark-left: 4px;
+  --dash-checkbox-mark-width: 5px;
+  --dash-checkbox-mark-height: 8px;
 
   /* Menu */
   --dash-menu-hover-border: #B9BEC5;

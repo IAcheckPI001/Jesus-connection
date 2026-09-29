@@ -1,0 +1,174 @@
+.pickerWrapper {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  color: var(--dash-text);
+}
+
+.heading {
+  margin: 0;
+  font-size: var(--fs-lg);
+  font-weight: var(--fw-bold);
+}
+
+.trigger,
+.staticTitle {
+  display: inline-flex;
+  min-height: var(--dash-control-height);
+  max-width: 100%;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--dash-text);
+  font: inherit;
+  font-weight: var(--fw-bold);
+}
+
+.trigger {
+  cursor: pointer;
+}
+
+.trigger:focus-visible {
+  border-radius: var(--dash-radius-control);
+  box-shadow: var(--dash-focus-ring);
+}
+
+.trigger:disabled {
+  cursor: wait;
+}
+
+.triggerLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.chevron {
+  flex: 0 0 var(--dash-search-icon-size);
+  width: var(--dash-search-icon-size);
+  height: var(--dash-search-icon-size);
+  color: var(--dash-text-muted);
+}
+
+.titleSkeleton {
+  display: inline-block;
+  width: var(--dash-picker-title-skeleton-width);
+  height: var(--dash-picker-title-skeleton-height);
+  border-radius: var(--dash-radius-control);
+  background: var(--dash-divider);
+}
+
+.panel {
+  position: absolute;
+  z-index: var(--dash-z-popover);
+  top: calc(100% + var(--space-1));
+  left: 0;
+  display: flex;
+  width: var(--dash-picker-panel-width);
+  max-width: calc(100vw - 32px);
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--dash-divider);
+  border-radius: var(--dash-radius-control);
+  background: var(--dash-bg-card);
+  box-shadow: var(--dash-shadow-popover);
+}
+
+.panelAlignRight {
+  right: 0;
+  left: auto;
+}
+
+.panelTitle {
+  color: var(--dash-text-muted);
+  font-size: var(--fs-xs);
+}
+
+.emptyState {
+  display: flex;
+  min-height: var(--dash-picker-empty-height);
+  align-items: center;
+  justify-content: center;
+  color: var(--dash-text-muted);
+  font-size: var(--fs-sm);
+  text-align: center;
+}
+
+.checkRow {
+  display: flex;
+  min-height: var(--dash-picker-row-height);
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-1);
+  border-radius: var(--dash-radius-checkbox);
+  color: var(--dash-text);
+  cursor: pointer;
+  font-size: var(--fs-sm);
+}
+
+.checkRow:hover {
+  background: var(--dash-search-bg);
+}
+
+.checkbox {
+  position: relative;
+  flex: 0 0 var(--dash-checkbox-size);
+  width: var(--dash-checkbox-size);
+  height: var(--dash-checkbox-size);
+  margin: 0;
+  appearance: none;
+  border: 1px solid var(--dash-border);
+  border-radius: var(--dash-radius-checkbox);
+  background: var(--dash-bg-card);
+  cursor: pointer;
+}
+
+.checkbox:checked {
+  border-color: var(--dash-primary);
+  background: var(--dash-primary);
+}
+
+.checkbox:checked::after {
+  position: absolute;
+  top: var(--dash-checkbox-mark-top);
+  left: var(--dash-checkbox-mark-left);
+  width: var(--dash-checkbox-mark-width);
+  height: var(--dash-checkbox-mark-height);
+  transform: rotate(45deg);
+  border-right: 2px solid var(--dash-on-primary);
+  border-bottom: 2px solid var(--dash-on-primary);
+  content: '';
+}
+
+.checkbox:focus-visible {
+  outline: 0;
+  box-shadow: var(--dash-focus-ring);
+}
+
+.checkLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.optionsList {
+  max-height: var(--dash-picker-list-max-height);
+  overflow-y: auto;
+}
+
+.expandButton {
+  align-self: flex-start;
+  min-height: var(--dash-picker-row-height);
+  padding: 0 var(--space-1);
+  color: var(--dash-text);
+  cursor: pointer;
+  font-size: var(--fs-xs);
+}
+
+.expandButton:hover,
+.expandButton:focus-visible {
+  color: var(--dash-primary);
+  text-decoration: underline;
+}

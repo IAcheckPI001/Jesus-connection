@@ -1,0 +1,143 @@
+
+
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+/* Bảng có thể rộng hơn modal (nhiều cột), nên cần cuộn ngang riêng
+   thay vì để cả modal bị vỡ layout */
+.tableScroll {
+  max-height: 420px;
+  overflow: auto;
+  border: 1px solid var(--dash-border, var(--color-border));
+  border-radius: var(--radius-md);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+
+thead {
+  position: sticky;
+  top: 0;
+  background: var(--dash-bg-card, #fff);
+  z-index: 1; /* nổi trên nội dung khi cuộn dọc */
+}
+
+th,
+td {
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  border-bottom: 1px solid var(--dash-divider, var(--color-border));
+  white-space: nowrap;
+}
+
+/* Input trong ô bảng: bỏ style mặc định, chỉ giữ đủ để nhận biết
+   đang có thể gõ, tránh input trông "nặng" hơn cả ô bảng */
+td input {
+  width: 100%;
+  min-width: 100px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  font: inherit;
+  background: transparent;
+}
+
+td input:hover {
+  border-color: var(--dash-border, var(--color-border));
+}
+
+td input:focus-visible {
+  outline: none;
+  border-color: var(--dash-primary);
+  box-shadow: var(--dash-focus-ring, 0 0 0 2px rgba(89, 50, 234, 0.2));
+}
+
+/* Input đang có lỗi — viền đỏ để thấy ngay ô nào cần sửa, không chỉ
+   dựa vào dòng thông báo lỗi bên dưới */
+td input[aria-invalid='true'] {
+  border-color: var(--color-error);
+}
+
+.cellError {
+  display: block;
+  color: var(--color-error);
+  font-size: 0.7rem;
+  margin-top: 2px;
+  white-space: normal; /* lỗi có thể dài, cho phép xuống dòng riêng ô này */
+}
+
+/* Toàn bộ dòng bị lỗi chặn — nền đỏ rất nhạt để dễ nhận ra cả dòng
+   trong danh sách dài, không chỉ dựa vào từng ô input riêng lẻ */
+.rowError {
+  background: var(--dash-error-bg, #fdecec);
+}
+
+.rowDuplicate {
+  background: var(--dash-warning-bg, #fff8e1);
+}
+
+.badgeOk,
+.badgeWarning,
+.badgeError {
+  display: inline-block;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: var(--fw-medium);
+  white-space: nowrap;
+}
+
+.badgeOk {
+  background: var(--dash-success-bg);
+  color: var(--color-success);
+}
+
+.badgeWarning {
+  background: var(--dash-warning-bg);
+  color: var(--color-warning);
+}
+
+.badgeError {
+  background: var(--dash-error-bg);
+  color: var(--color-error);
+}
+
+.summary {
+  font-size: var(--fs-sm);
+  color: var(--dash-text-muted, var(--color-text-muted));
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+}
+
+.actions button:last-child {
+  background: var(--dash-primary);
+  color: var(--dash-on-primary, #fff);
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-md);
+}
+
+.actions button:last-child:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Dùng cho <th> chỉ có nội dung để hỗ trợ truy cập (cột "Hành động"),
+   không cần hiển thị chữ trên giao diện nhưng screen reader vẫn đọc được */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
