@@ -6,13 +6,17 @@ import { menuItems } from './menuItems';
 import NavItem from './NavItem';
 import UserMenu from './UserMenu';
 import styles from './DashboardLayout.module.scss';
+import { useAuth } from '../../hooks/useAuth';
 
 type MobileDrawerProps = {
   onClose: () => void;
 };
 
 function MobileDrawer({ onClose }: MobileDrawerProps) {
+  const { user, logout } = useAuth();
   const drawerRef = useRef<HTMLElement>(null);
+  const name = user?.ho_ten || user?.ten_thanh || user?.so_dien_thoai || 'Tài khoản';
+  const roleLabel = user?.roles.join(', ') || 'Thành viên';
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -82,7 +86,7 @@ function MobileDrawer({ onClose }: MobileDrawerProps) {
           ))}
         </nav>
         <div className={styles.drawerFooter}>
-          <UserMenu name="Cao Van Dong" roleLabel="Chủ nhiệm lớp" />
+          <UserMenu name={name} roleLabel={roleLabel} onLogout={() => void logout()} />
         </div>
       </aside>
     </div>

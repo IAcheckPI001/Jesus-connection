@@ -25,16 +25,3 @@ export async function getAllUsers() {
     orderBy: { ngay_khoi_tao: 'desc' },
   });
 }
-
-// Tạo mới
-export async function createUser(data: { ten_tai_khoan: string; mat_khau: string}) {
-  return prisma.tai_khoan.create({ data });
-}
-
-// Cập nhật
-export async function updateUser(id: string, data: Partial<{ ten_tai_khoan: string; mat_khau: string }>) {
-  return prisma.tai_khoan.update({
-    where: { id },
-    data,
-  });
-}

@@ -1,7 +1,7 @@
 
 
 import { apiClient } from './apiClient';
-import type { LoginCredentials, LoginResponse, AuthUser } from '../types/auth';
+import type { CurrentUserResponse, LoginCredentials, LoginResponse } from '../types/auth';
 
 export const authService = {
   login: (credentials: LoginCredentials) =>
@@ -9,5 +9,5 @@ export const authService = {
 
   logout: () => apiClient.post<void>('/auth/logout', {}),
 
-  getCurrentUser: () => apiClient.get<AuthUser>('/auth/me'),
+  getCurrentUser: () => apiClient.get<CurrentUserResponse>('/auth/me'),
 };

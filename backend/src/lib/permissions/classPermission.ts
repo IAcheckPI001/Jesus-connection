@@ -1,7 +1,6 @@
 
 
 // lib/permissions/classPermission.ts
-import { ADMIN_VIEW_ROLES, ROLES } from '../constants/roles';
 import type { ResolvedPermission } from '../services/permissionService';
 
 export type ClassAction = 'view' | 'create' | 'update' | 'delete';
@@ -11,23 +10,18 @@ export function canPerformClassAction(
   classId: string,
   action: ClassAction
 ): boolean {
-  const isAdminRole = permission.roles.some((r) =>
-    (ADMIN_VIEW_ROLES as readonly string[]).includes(r)
-  );
-
-  // Ban Hành Chánh / Xứ đoàn trưởng / Cha: chỉ được "view", trên MỌI lớp
-  if (isAdminRole) {
-    return action === 'view';
+  if (action === 'view') {
+    return permission.canViewAllChildren || permission.viewableClasses.includes(classId);
   }
 
-  // Huynh Trưởng: full CRUD nhưng CHỈ trên đúng lớp mình phụ trách
-  const isAssignedHuynhTruong =
-    permission.roles.includes(ROLES.CHU_NHIEM_LOP || ROLES.PHU_LOP) &&
-    permission.assignedClasses.includes(classId);
-
-  if (isAssignedHuynhTruong) {
-    return true; // được cả view/create/update/delete
+  if (action === 'update') {
+    return permission.canManageAllChildren || permission.editableClasses.includes(classId);
   }
 
-  return false;
+  // Chỉ Ban Hành Chánh (BAN_HC) được thêm hoặc xóa thiếu nhi.
+  return permission.canManageAllChildren;
+}
+
+export function canViewPersonnel(permission: ResolvedPermission): boolean {
+  return permission.canViewPersonnel;
 }

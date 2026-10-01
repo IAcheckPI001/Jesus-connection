@@ -124,6 +124,18 @@
   cursor: pointer;
 }
 
+.checkbox[type='radio'] { border-radius: 50%; }
+.checkbox[type='radio']:checked::after {
+  top: 4px;
+  left: 4px;
+  width: calc(var(--dash-checkbox-size) - 10px);
+  height: calc(var(--dash-checkbox-size) - 10px);
+  transform: none;
+  border: 0;
+  border-radius: 50%;
+  background: var(--dash-on-primary);
+}
+
 .checkbox:checked {
   border-color: var(--dash-primary);
   background: var(--dash-primary);

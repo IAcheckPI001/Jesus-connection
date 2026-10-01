@@ -1,13 +1,14 @@
-import { ChevronDown } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import styles from './DashboardLayout.module.scss';
 
 type UserMenuProps = {
   name: string;
   roleLabel: string;
   avatarUrl?: string;
+  onLogout: () => void;
 };
 
-function UserMenu({ name, roleLabel, avatarUrl }: UserMenuProps) {
+function UserMenu({ name, roleLabel, avatarUrl, onLogout }: UserMenuProps) {
   const initials = name
     .trim()
     .split(/\s+/)
@@ -17,16 +18,21 @@ function UserMenu({ name, roleLabel, avatarUrl }: UserMenuProps) {
     .toLocaleUpperCase('vi');
 
   return (
-    <button className={styles.userMenu} type="button" aria-label={`${name}, ${roleLabel}`}>
-      <span className={styles.avatar} aria-hidden="true">
-        {avatarUrl ? <img src={avatarUrl} alt="" /> : initials}
-      </span>
-      <span className={styles.userDetails}>
-        <span className={styles.userName}>{name}</span>
-        <span className={styles.userRole}>{roleLabel}</span>
-      </span>
-      <ChevronDown className={styles.userChevron} aria-hidden="true" />
-    </button>
+    <div className={styles.userMenu}>
+      <div className={styles.userIdentity}>
+        <span className={styles.avatar} aria-hidden="true">
+          {avatarUrl ? <img src={avatarUrl} alt="" /> : initials}
+        </span>
+        <span className={styles.userDetails}>
+          <span className={styles.userName}>{name}</span>
+          <span className={styles.userRole}>{roleLabel}</span>
+        </span>
+      </div>
+      <button className={styles.logoutButton} type="button" onClick={onLogout}>
+        <LogOut size={16} aria-hidden="true" />
+        <span className={styles.logoutLabel}>Đăng xuất</span>
+      </button>
+    </div>
   );
 }
 

@@ -10,11 +10,10 @@ export async function requireAuth() {
   const session = await getSessionByToken(token);
   if (!session) return null;
 
-  const { roles, assignedClasses } = await resolvePermissions(session.tai_khoan_id);
+  const permissions = await resolvePermissions(session.tai_khoan_id);
 
   return {
     taiKhoanId: session.tai_khoan_id,
-    roles,
-    assignedClasses,
+    ...permissions,
   };
 }

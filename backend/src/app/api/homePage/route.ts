@@ -16,9 +16,5 @@ export async function GET() {
     },
   ];
 
-  return NextResponse.json(data, {
-    headers: {
-      "Access-Control-Allow-Origin": "http://localhost:5173",
-    },
-  });
+  return NextResponse.json(data);
 }

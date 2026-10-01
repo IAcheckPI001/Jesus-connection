@@ -5,8 +5,8 @@ import type { ThieuNhiListItem } from '../../../types/thieuNhi';
 import { formatNgaySinh, getFullName, getRowNumber } from '../../../utils/thieuNhi';
 import styles from './ThieuNhiRow.module.scss';
 
-type ThieuNhiRowProps = {
-  rows: ThieuNhiListItem[];
+type ThieuNhiRowProps<T extends ThieuNhiListItem & { attendance?: Record<string, string | null>; scores?: Record<string, number | null> }> = {
+  rows: T[];
   startIndex: number;
   showClassColumn: boolean;
   canEdit?: (row: ThieuNhiListItem) => boolean;
@@ -15,9 +15,10 @@ type ThieuNhiRowProps = {
   error?: string | null;
   onRetry?: () => void;
   layout?: 'desktop' | 'mobile';
+  extraColumns?: DataTableColumn<T & { rowNumber: number }>[];
 };
 
-function ThieuNhiRow({
+function ThieuNhiRow<T extends ThieuNhiListItem & { attendance?: Record<string, string | null>; scores?: Record<string, number | null> }>({
   rows,
   startIndex,
   showClassColumn,
@@ -27,9 +28,10 @@ function ThieuNhiRow({
   error,
   onRetry,
   layout = 'desktop',
-}: ThieuNhiRowProps) {
+  extraColumns = [],
+}: ThieuNhiRowProps<T>) {
   const canEditRow = canEdit ?? (() => true);
-  type IndexedThieuNhi = ThieuNhiListItem & { rowNumber: number };
+  type IndexedThieuNhi = T & { rowNumber: number };
   const indexedRows: IndexedThieuNhi[] = rows.map((row, index) => ({
     ...row,
     rowNumber: getRowNumber(1, 1, startIndex + index - 1),
@@ -131,7 +133,7 @@ function ThieuNhiRow({
 
   return (
     <DataTable
-      columns={layout === 'mobile' ? mobileColumns : desktopColumns}
+      columns={layout === 'mobile' ? mobileColumns : [...desktopColumns.slice(0, -1), ...extraColumns, desktopColumns[desktopColumns.length - 1]]}
       rows={indexedRows}
       rowKey={(row) => row.id}
       isLoading={isLoading}

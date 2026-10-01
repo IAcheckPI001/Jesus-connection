@@ -1,14 +1,16 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState, type ReactNode } from 'react';
 import { Outlet } from 'react-router-dom';
 import MobileDrawer from './MobileDrawer';
 import MobileTopbar from './MobileTopbar';
 import Sidebar from './Sidebar';
 import styles from './DashboardLayout.module.scss';
+import { useEffect } from 'react';
 
-function DashboardLayout() {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+function DashboardLayout({ initialCollapsed = false, children }: { initialCollapsed?: boolean; children?: ReactNode }) {
+  const [isCollapsed, setIsCollapsed] = useState(initialCollapsed);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const closeDrawer = useCallback(() => setIsDrawerOpen(false), []);
+  useEffect(() => { setIsCollapsed(initialCollapsed); }, [initialCollapsed]);
 
   return (
     <div className={`dashboard-scope ${styles.scope} ${isCollapsed ? styles.collapsed : ''}`}>
@@ -21,7 +23,7 @@ function DashboardLayout() {
         onToggle={() => setIsCollapsed((current) => !current)}
       />
       <main className={styles.content}>
-        <Outlet />
+        {children ?? <Outlet />}
       </main>
       {isDrawerOpen && (
         <MobileDrawer onClose={closeDrawer} />

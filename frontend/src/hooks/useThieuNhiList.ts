@@ -1,125 +1,56 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { useAuthContext } from '../contexts/AuthContext';
 import { DEFAULT_PAGE_SIZE } from '../constants/thieuNhi';
-import { thieuNhiMock } from '../mocks/thieuNhiMock';
-import type {
-  ThieuNhiListItem,
-  ThieuNhiStats,
-  TrangThaiFilter,
-} from '../types/thieuNhi';
-import { normalizeSearchText } from '../utils/thieuNhi';
+import { apiClient } from '../services/apiClient';
+import type { ThieuNhiListItem, ThieuNhiStats, TrangThaiFilter } from '../types/thieuNhi';
 
-export type UseThieuNhiListParams = {
-  classIds: string[];
-  search: string;
-  trangThai: TrangThaiFilter;
-  page: number;
-  pageSize?: number;
-};
-
-export type UseThieuNhiListResult = {
-  items: ThieuNhiListItem[];
+export type AttendanceColumn = { id: string; date: string; isUpcoming: boolean };
+export type DoanSinhPage = {
+  items: (ThieuNhiListItem & {
+    attendance: Record<string, string | null>;
+    scores: { behavior: number | null; campaignExam: number | null; catechismExam: number | null; average: number | null };
+  })[];
   total: number;
   totalPages: number;
   page: number;
+  pageSize: number;
   stats: ThieuNhiStats;
-  isLoading: boolean;
-  error: string | null;
-  refetch: () => void;
+  attendanceColumns: AttendanceColumn[];
 };
 
-type ListData = Pick<UseThieuNhiListResult, 'items' | 'total' | 'totalPages' | 'page' | 'stats'>;
+export type UseThieuNhiListParams = {
+  classId: string;
+  search: string;
+  trangThai: TrangThaiFilter;
+  page: number;
+  includeAttendance?: boolean;
+};
 
-function calculateList(
-  classIds: string[],
-  search: string,
-  trangThai: TrangThaiFilter,
-  requestedPage: number,
-  pageSize: number,
-): ListData {
-  const selectedClassIds = new Set(classIds);
-  const classItems = thieuNhiMock.filter((item) => selectedClassIds.has(item.chiDoanId));
-  const activeItems = classItems.filter((item) => item.trangThai === 'dang_sinh_hoat');
-  const stats: ThieuNhiStats = {
-    siSo: activeItems.length,
-    nu: activeItems.filter((item) => item.gioiTinh === 'nu').length,
-    nam: activeItems.filter((item) => item.gioiTinh === 'nam').length,
-  };
-
-  // Filtering order is class, status, search, then pagination.
-  const statusItems = trangThai === 'tat_ca'
-    ? classItems
-    : classItems.filter((item) => item.trangThai === trangThai);
-  const searchTokens = normalizeSearchText(search).split(' ').filter(Boolean);
-  const filteredItems = searchTokens.length === 0
-    ? statusItems
-    : statusItems.filter((item) => {
-        const searchableText = normalizeSearchText(
-          [item.tenThanh ?? '', item.ho, item.ten].join(' '),
-        );
-        return searchTokens.every((token) => searchableText.includes(token));
+export function useThieuNhiList({ classId, search, trangThai, page, includeAttendance = false }: UseThieuNhiListParams) {
+  const { user } = useAuthContext();
+  const query = useQuery({
+    queryKey: ['doan-sinh', user?.id, classId, page, DEFAULT_PAGE_SIZE, search, trangThai, includeAttendance],
+    enabled: Boolean(user?.id && classId),
+    queryFn: () => {
+      const params = new URLSearchParams({
+        classId, page: String(page), pageSize: String(DEFAULT_PAGE_SIZE), search,
+        trangThai: trangThai === 'tat_ca' ? '' : trangThai,
+        includeAttendance: String(includeAttendance),
       });
-
-  const total = filteredItems.length;
-  const totalPages = Math.ceil(total / pageSize);
-  const normalizedPage = Number.isFinite(requestedPage)
-    ? Math.max(1, Math.trunc(requestedPage))
-    : 1;
-  const page = Math.min(normalizedPage, Math.max(totalPages, 1));
-  const offset = (page - 1) * pageSize;
-
+      return apiClient.get<DoanSinhPage>(`/doan-sinh?${params.toString()}`);
+    },
+    placeholderData: (previous) => previous,
+  });
   return {
-    items: filteredItems.slice(offset, offset + pageSize),
-    total,
-    totalPages,
-    page,
-    stats,
+    items: query.data?.items ?? [],
+    total: query.data?.total ?? 0,
+    totalPages: query.data?.totalPages ?? 0,
+    page: query.data?.page ?? page,
+    pageSize: query.data?.pageSize ?? DEFAULT_PAGE_SIZE,
+    stats: query.data?.stats ?? { siSo: 0, nu: 0, nam: 0 },
+    attendanceColumns: query.data?.attendanceColumns ?? [],
+    isLoading: query.isPending,
+    error: query.error instanceof Error ? query.error.message : null,
+    refetch: () => { void query.refetch(); },
   };
-}
-
-export function useThieuNhiList({
-  classIds,
-  search,
-  trangThai,
-  page,
-  pageSize = DEFAULT_PAGE_SIZE,
-}: UseThieuNhiListParams): UseThieuNhiListResult {
-  const safePageSize = Number.isFinite(pageSize) ? Math.max(1, Math.trunc(pageSize)) : DEFAULT_PAGE_SIZE;
-  const classIdsKey = JSON.stringify(classIds);
-  const [refreshVersion, setRefreshVersion] = useState(0);
-  const [listData, setListData] = useState(() =>
-    calculateList(classIds, search, trangThai, page, safePageSize),
-  );
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const refetch = useCallback(() => setRefreshVersion((version) => version + 1), []);
-
-  useEffect(() => {
-    let cancelled = false;
-    let requestTimer: number | undefined;
-    const classIdsSnapshot = JSON.parse(classIdsKey) as string[];
-    const startTimer = window.setTimeout(() => {
-      if (cancelled) return;
-      setIsLoading(true);
-      requestTimer = window.setTimeout(() => {
-        if (cancelled) return;
-        setListData(calculateList(
-          classIdsSnapshot,
-          search,
-          trangThai,
-          page,
-          safePageSize,
-        ));
-        setError(null);
-        setIsLoading(false);
-      }, 300);
-    }, 0);
-
-    return () => {
-      cancelled = true;
-      window.clearTimeout(startTimer);
-      if (requestTimer !== undefined) window.clearTimeout(requestTimer);
-    };
-  }, [classIdsKey, search, trangThai, page, safePageSize, refreshVersion]);
-
-  return { ...listData, isLoading, error, refetch };
 }

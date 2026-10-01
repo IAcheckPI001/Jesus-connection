@@ -5,6 +5,7 @@ import { menuItems } from './menuItems';
 import NavItem from './NavItem';
 import UserMenu from './UserMenu';
 import styles from './DashboardLayout.module.scss';
+import { useAuth } from '../../hooks/useAuth';
 
 type SidebarProps = {
   collapsed: boolean;
@@ -12,6 +13,10 @@ type SidebarProps = {
 };
 
 function Sidebar({ collapsed, onToggle }: SidebarProps) {
+  const { user, logout } = useAuth();
+  const name = user?.ho_ten || user?.ten_thanh || user?.so_dien_thoai || 'Tài khoản';
+  const roleLabel = user?.roles.join(', ') || 'Thành viên';
+
   return (
     <aside
       className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ''}`}
@@ -58,7 +63,7 @@ function Sidebar({ collapsed, onToggle }: SidebarProps) {
           : menuItems.map((item) => <NavItem key={item.to} item={item} />)}
       </nav>
       <div className={styles.sidebarFooter}>
-        <UserMenu name="Cao Van Dong" roleLabel="Chủ nhiệm lớp" />
+        <UserMenu name={name} roleLabel={roleLabel} onLogout={() => void logout()} />
       </div>
     </aside>
   );

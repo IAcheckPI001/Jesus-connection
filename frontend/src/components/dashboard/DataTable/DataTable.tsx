@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import styles from './DataTable.module.scss';
 
 export type DataTableColumn<T> = {
@@ -6,6 +7,7 @@ export type DataTableColumn<T> = {
   header: string;
   render: (row: T) => ReactNode;
   hideWhenSingleClass?: boolean;
+  group?: { id: string; title: string; expanded: boolean; onToggle: () => void };
 };
 
 type DataTableProps<T> = {
@@ -33,14 +35,34 @@ function DataTable<T>({
     (column) => !column.hideWhenSingleClass || showClassColumn,
   );
   const columnCount = Math.max(visibleColumns.length, 1);
+  const groups = visibleColumns.reduce<{ id: string; title: string; expanded: boolean; onToggle: () => void; count: number }[]>((result, column) => {
+    const group = column.group;
+    if (!group) return result;
+    const last = result[result.length - 1];
+    if (last?.id === group.id) last.count += 1;
+    else result.push({ ...group, count: 1 });
+    return result;
+  }, []);
+  const hasGroups = groups.length > 0;
 
   return (
     <div className={styles.tableContainer}>
       <table className={styles.table}>
         <thead>
+          {hasGroups && <tr>{visibleColumns.map((column) => {
+            if (!column.group) return <th key={column.key} rowSpan={2} scope="col">{column.header}</th>;
+            const first = visibleColumns.find((candidate) => candidate.group?.id === column.group?.id)?.key === column.key;
+            if (!first) return null;
+            const group = groups.find((candidate) => candidate.id === column.group?.id)!;
+            return <th key={group.id} scope="colgroup" colSpan={group.count}>
+              <button type="button" onClick={group.onToggle} aria-expanded={group.expanded}>
+                {group.expanded ? <ChevronDown size={14} /> : <ChevronRight size={14} />} {group.title}
+              </button>
+            </th>;
+          })}</tr>}
           <tr>
             {visibleColumns.map((column) => (
-              <th key={column.key} scope="col">
+              hasGroups && !column.group ? null : <th key={column.key} scope="col">
                 {column.header && <span>{column.header}</span>}
               </th>
             ))}
