@@ -7,11 +7,18 @@ export type LoginCredentials = {
 
 export type AuthUser = {
   id: string;
-  username: string;
-  fullName: string;
-  role: string;
+  soDienThoai: string;
+  tenThanh: string;
+  hoTen: string | null;
+  roles: string[];
+  assignedClasses: string[];
 };
 
 export type LoginResponse = {
+  user: AuthUser;
+  canAccessDashboard: boolean;
+};
+
+export type CurrentUserResponse = {
   user: AuthUser;
 };

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import type { HomePage } from '@/src/types/home-page';
 
 export async function GET() {
-  const data = [
+  const data: HomePage[] = [
     {
       id: 1,
       week: 39,
@@ -16,9 +17,5 @@ export async function GET() {
     },
   ];
 
-  return NextResponse.json(data, {
-    headers: {
-      "Access-Control-Allow-Origin": "http://localhost:5173",
-    },
-  });
+  return NextResponse.json(data);
 }

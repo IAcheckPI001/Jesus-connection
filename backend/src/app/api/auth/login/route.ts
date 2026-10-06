@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ message: 'Sai thông tin đăng nhập' }, { status: 401 });
   }
 
-  const { roles, assignedClasses } = await resolvePermissions(user.id);
+  const permissions = await resolvePermissions(user.id);
 
   const token = await createSession(user.id, {
     ip: req.headers.get('x-forwarded-for') ?? undefined,
@@ -34,8 +34,8 @@ export async function POST(req: NextRequest) {
   await setSessionCookie(token);
 
   return NextResponse.json({
-    user: toPublicUser(user, roles, assignedClasses),
-    canAccessDashboard: canAccessDashboard({ roles, assignedClasses }),
+    user: toPublicUser(user, permissions.roles, permissions.assignedClasses),
+    canAccessDashboard: canAccessDashboard(permissions),
   });
 
 }

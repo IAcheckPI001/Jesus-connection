@@ -1,0 +1,45 @@
+
+
+/* src/components/dashboard/ImportExcelModal/ImportExcelModal.module.scss */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--dash-z-popover);
+}
+
+.dialog {
+  background: #fff;
+  border-radius: var(--dash-radius-card, 16px);
+  padding: var(--space-5);
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Ẩn input file khỏi mắt nhưng vẫn giữ trong luồng truy cập
+   (khác display: none — display: none sẽ khiến bàn phím/trình đọc
+   màn hình bỏ qua hoàn toàn phần tử này) */
+.hiddenInput {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.errorText {
+  color: var(--color-error);
+  font-size: var(--fs-sm);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-5);
+}

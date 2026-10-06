@@ -1,0 +1,78 @@
+.searchInput {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  height: var(--dash-control-height);
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-2);
+  border: 1px solid #3333331c;
+  border-radius: var(--dash-radius-control);
+  color: var(--dash-text-muted);
+}
+
+.filled {
+  background: var(--dash-search-bg);
+}
+
+.outlined {
+  border-color: var(--dash-search-border-strong);
+  background: var(--dash-bg-card);
+}
+
+.searchInput:focus-within {
+  box-shadow: var(--dash-focus-ring);
+}
+
+.searchIcon {
+  flex: 0 0 var(--dash-search-icon-size);
+  width: var(--dash-search-icon-size);
+  height: var(--dash-search-icon-size);
+}
+
+.input {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--dash-text);
+  font: inherit;
+  font-size: var(--fs-sm);
+}
+
+.input::placeholder {
+  color: var(--dash-text-muted);
+  opacity: 1;
+}
+
+.input::-webkit-search-cancel-button,
+.input::-webkit-search-decoration,
+.input::-ms-clear {
+  display: none;
+  appearance: none;
+}
+
+.clearButton {
+  display: inline-flex;
+  flex: 0 0 var(--dash-clear-button-size);
+  width: var(--dash-clear-button-size);
+  height: var(--dash-clear-button-size);
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--dash-radius-round);
+  color: var(--dash-text-muted);
+}
+
+.clearButton:hover,
+.clearButton:focus-visible {
+  background: var(--dash-page-btn-bg);
+  box-shadow: var(--dash-focus-ring);
+}
+
+.clearButton svg {
+  width: var(--dash-search-icon-size);
+  height: var(--dash-search-icon-size);
+}

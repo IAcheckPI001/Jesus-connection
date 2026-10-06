@@ -1,0 +1,113 @@
+.tableContainer {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--dash-text);
+  font-size: var(--fs-base);
+  text-align: left;
+}
+
+.table thead {
+  color: var(--dash-text);
+}
+
+.table th {
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--dash-table-row-border);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-bold);
+  white-space: nowrap;
+}
+
+.table th button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  color: inherit;
+  font: inherit;
+}
+
+.table td {
+  padding: var(--space-3) var(--space-2);
+  border-bottom: 1px solid var(--dash-table-row-border);
+  vertical-align: middle;
+}
+
+.dataRow:hover {
+  background: var(--dash-table-row-hover-bg);
+}
+
+.stateCell {
+  padding: var(--space-6) var(--space-3) !important;
+  text-align: center;
+}
+
+.emptyState {
+  color: var(--dash-text-muted);
+}
+
+.errorState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  color: var(--dash-text);
+}
+
+.retryButton {
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--dash-radius-control);
+  background: var(--dash-page-btn-bg);
+  color: var(--dash-page-btn-text);
+  cursor: pointer;
+}
+
+.retryButton:hover,
+.retryButton:focus-visible {
+  box-shadow: var(--dash-focus-ring);
+}
+
+.skeletonRow td {
+  height: var(--dash-control-height);
+}
+
+.skeleton {
+  display: block;
+  height: var(--dash-search-icon-size);
+  border-radius: var(--dash-radius-control);
+  background: linear-gradient(90deg, var(--dash-divider), var(--dash-search-bg), var(--dash-divider));
+  background-size: 200% 100%;
+  animation: table-shimmer 1.2s ease-in-out infinite;
+}
+
+.skeletonWidth0 { width: 40%; }
+.skeletonWidth1 { width: 70%; }
+.skeletonWidth2 { width: 55%; }
+
+@media (max-width: 1023px) {
+  .table {
+    font-size: var(--fs-xs);
+  }
+
+  .table th,
+  .table td {
+    padding: var(--space-2) var(--space-1);
+    font-size: var(--fs-sm);
+  }
+}
+
+@keyframes table-shimmer {
+  from { background-position: 100% 0; }
+  to { background-position: -100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skeleton {
+    animation: none;
+  }
+}

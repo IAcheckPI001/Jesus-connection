@@ -1,4 +1,4 @@
-import { ArrowRight, House } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import LoginForm from '../components/auth/LoginForm';
 import { useAuth } from '../hooks/useAuth'
@@ -23,12 +23,12 @@ function LoginPage() {
             Đăng ký sử dụng <ArrowRight size={16} aria-hidden="true" />
           </Link>
         </div>
-        <div className={styles.loginHome}>
+        {/* <div className={styles.loginHome}>
           <Link to="/">
             <House size={16} aria-hidden="true" />
             <span>Quay lại trang chính</span>
           </Link>
-        </div>
+        </div> */}
       </section>
     </main>
   );

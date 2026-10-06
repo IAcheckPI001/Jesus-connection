@@ -1,7 +1,7 @@
 
 
 import crypto from 'crypto';
-import { prisma } from '../prisma';
+import { prisma } from '@/src/lib/prisma';
 
 const SESSION_DURATION_MS = 1000 * 60 * 60 * 24 * 7; // 7 ngày
 
@@ -48,12 +48,4 @@ export async function deleteSession(token: string) {
 // Đăng xuất khỏi TẤT CẢ thiết bị — tính năng chỉ có được nhờ lưu server-side
 export async function deleteAllSessionsForUser(taiKhoanId: string) {
   await prisma.phien_dang_nhap.deleteMany({ where: { tai_khoan_id: taiKhoanId } });
-}
-
-// Danh sách thiết bị đang đăng nhập — như Zalo/Facebook đã bàn trước
-export async function listSessionsForUser(taiKhoanId: string) {
-  return prisma.phien_dang_nhap.findMany({
-    where: { tai_khoan_id: taiKhoanId, ngay_het_han: { gt: new Date() } },
-    orderBy: { truy_cap_cuoi: 'desc' },
-  });
 }

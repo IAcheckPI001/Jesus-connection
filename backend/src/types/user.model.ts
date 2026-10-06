@@ -5,9 +5,9 @@ import type { tai_khoanModel, nhan_suModel } from '@/src/generated/prisma/models
 // Type dữ liệu trả ra ngoài API — không chứa mat_khau_hash hay field nhạy cảm khác
 export type PublicUser = {
   id: string;
-  so_dien_thoai: string;
-  ten_thanh: string;
-  ho_ten: string | null;
+  soDienThoai: string;
+  tenThanh: string;
+  hoTen: string | null;
   roles: string[];
   assignedClasses: string[];
 };
@@ -24,9 +24,9 @@ export function toPublicUser(
 ): PublicUser {
   return {
     id: user.id,
-    so_dien_thoai: user.ten_tai_khoan ?? '',
-    ten_thanh: user.nhan_su?.ten_thanh ?? '',
-    ho_ten: user.nhan_su?.ho_ten ?? '',
+    soDienThoai: user.ten_tai_khoan ?? '',
+    tenThanh: user.nhan_su?.ten_thanh ?? '',
+    hoTen: user.nhan_su?.ho_ten ?? '',
     roles,
     assignedClasses,
   };
