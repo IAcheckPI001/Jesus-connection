@@ -14,7 +14,7 @@ type SidebarProps = {
 
 function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const { user, logout } = useAuth();
-  const name = user?.ho_ten || user?.ten_thanh || user?.so_dien_thoai || 'Tài khoản';
+  const name = user?.hoTen || user?.tenThanh || user?.soDienThoai || 'Tài khoản';
   const roleLabel = user?.roles.join(', ') || 'Thành viên';
 
   return (

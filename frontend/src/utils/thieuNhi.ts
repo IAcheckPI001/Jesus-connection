@@ -1,4 +1,3 @@
-import type { ThieuNhiListItem } from '../types/thieuNhi';
 
 /**
  * Ghép họ và tên, bỏ phần rỗng và gộp khoảng trắng.
@@ -37,33 +36,21 @@ export function formatNgaySinh(iso: string | null): string {
   if (!iso) return '—';
 
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
-  if (!match) return '—';
-
-  const year = Number(match[1]);
-  const month = Number(match[2]);
-  const day = Number(match[3]);
-  const checkedDate = new Date(Date.UTC(year, month - 1, day));
-  if (
-    checkedDate.getUTCFullYear() !== year
-    || checkedDate.getUTCMonth() !== month - 1
-    || checkedDate.getUTCDate() !== day
-  ) {
-    return '—';
-  }
+  if (!match || !isValidIsoDate(iso)) return '—';
 
   return `${match[3]}/${match[2]}/${match[1]}`;
 }
 
-const viCollator = new Intl.Collator('vi');
-
-export function compareVi(a: string, b: string): number {
-  return viCollator.compare(a, b);
-}
-
-export function compareByTen(a: ThieuNhiListItem, b: ThieuNhiListItem): number {
-  return compareVi(a.ten, b.ten)
-    || compareVi(a.ho, b.ho)
-    || compareVi(a.tenThanh ?? '', b.tenThanh ?? '');
+export function isValidIsoDate(iso: string): boolean {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!match) return false;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year
+    && date.getUTCMonth() === month - 1
+    && date.getUTCDate() === day;
 }
 
 export function getRowNumber(page: number, pageSize: number, indexInPage: number): number {

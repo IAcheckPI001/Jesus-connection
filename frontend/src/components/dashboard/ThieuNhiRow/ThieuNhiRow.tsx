@@ -8,7 +8,6 @@ import styles from './ThieuNhiRow.module.scss';
 type ThieuNhiRowProps<T extends ThieuNhiListItem & { attendance?: Record<string, string | null>; scores?: Record<string, number | null> }> = {
   rows: T[];
   startIndex: number;
-  showClassColumn: boolean;
   canEdit?: (row: ThieuNhiListItem) => boolean;
   onEdit: (id: string) => void;
   isLoading?: boolean;
@@ -21,7 +20,6 @@ type ThieuNhiRowProps<T extends ThieuNhiListItem & { attendance?: Record<string,
 function ThieuNhiRow<T extends ThieuNhiListItem & { attendance?: Record<string, string | null>; scores?: Record<string, number | null> }>({
   rows,
   startIndex,
-  showClassColumn,
   canEdit,
   onEdit,
   isLoading,
@@ -61,12 +59,6 @@ function ThieuNhiRow<T extends ThieuNhiListItem & { attendance?: Record<string, 
       key: 'ngay-sinh',
       header: 'Ngày sinh',
       render: (row) => formatNgaySinh(row.ngaySinh),
-    },
-    {
-      key: 'lop',
-      header: 'Lớp',
-      hideWhenSingleClass: true,
-      render: (row) => row.lopTen,
     },
     {
       key: 'doi',
@@ -139,7 +131,6 @@ function ThieuNhiRow<T extends ThieuNhiListItem & { attendance?: Record<string, 
       isLoading={isLoading}
       error={error}
       onRetry={onRetry}
-      showClassColumn={showClassColumn}
     />
   );
 }

@@ -12,7 +12,7 @@ import { useThieuNhiList } from '../hooks/useThieuNhiList';
 import { useDebouncedValue } from '../hooks/useDebouncedValue';
 import type { ThieuNhiListItem } from '../types/thieuNhi';
 import { getRowNumber } from '../utils/thieuNhi';
-import styles from './DashboardThieuNhiPage.module.scss';
+import styles from './ThieuNhiListPage.module.scss';
 
 type IndexedChild = ThieuNhiListItem & { rowNumber: number; attendance: Record<string, string | null>; scores: { behavior: number | null; campaignExam: number | null; catechismExam: number | null; average: number | null } };
 type Preferences = { attendanceExpanded: boolean; gradesExpanded: boolean };
@@ -63,14 +63,14 @@ function DoanSinhClassPage() {
       <div className={styles.tableToolbar}>
         <div className={styles.tableTitleGroup}>
           <div className={styles.classHeading}>
-            <ClassPicker options={options} selectedId={classId} onChange={(id) => navigate(`/doan-sinh/lop/${id}`)} isLoading={classesLoading} />
+            <ClassPicker options={options} selectedId={classId} onChange={(id) => navigate(`/thieu-nhi/lop/${id}`)} isLoading={classesLoading} />
           </div>
           <p className={styles.tableSubtitle}>Thông tin thiếu nhi trong lớp</p>
         </div>
         <SearchInput className={styles.searchInput} value={searchInput} onChange={setSearchInput} ariaLabel="Tìm kiếm thiếu nhi" variant="filled" />
       </div>
       <div className={styles.tableFrame}>
-        <ThieuNhiRow rows={rows} startIndex={getRowNumber(list.page, DEFAULT_PAGE_SIZE, 0)} showClassColumn={false} layout="desktop" isLoading={list.isLoading} error={list.error} onRetry={list.refetch} onEdit={() => undefined} canEdit={() => false} extraColumns={columns} />
+        <ThieuNhiRow rows={rows} startIndex={getRowNumber(list.page, DEFAULT_PAGE_SIZE, 0)} layout="desktop" isLoading={list.isLoading} error={list.error} onRetry={list.refetch} onEdit={() => undefined} canEdit={() => false} extraColumns={columns} />
       </div>
       <div className={styles.paginationRow}><Pagination page={list.page} totalPages={list.totalPages} onPageChange={setPage} /></div>
     </section>

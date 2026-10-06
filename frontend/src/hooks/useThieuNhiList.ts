@@ -5,7 +5,7 @@ import { apiClient } from '../services/apiClient';
 import type { ThieuNhiListItem, ThieuNhiStats, TrangThaiFilter } from '../types/thieuNhi';
 
 export type AttendanceColumn = { id: string; date: string; isUpcoming: boolean };
-export type DoanSinhPage = {
+export type ThieuNhiPage = {
   items: (ThieuNhiListItem & {
     attendance: Record<string, string | null>;
     scores: { behavior: number | null; campaignExam: number | null; catechismExam: number | null; average: number | null };
@@ -29,7 +29,13 @@ export type UseThieuNhiListParams = {
 export function useThieuNhiList({ classId, search, trangThai, page, includeAttendance = false }: UseThieuNhiListParams) {
   const { user } = useAuthContext();
   const query = useQuery({
-    queryKey: ['doan-sinh', user?.id, classId, page, DEFAULT_PAGE_SIZE, search, trangThai, includeAttendance],
+    queryKey: ['thieu-nhi', user?.id, classId, {
+      page,
+      pageSize: DEFAULT_PAGE_SIZE,
+      search,
+      trangThai,
+      includeAttendance,
+    }],
     enabled: Boolean(user?.id && classId),
     queryFn: () => {
       const params = new URLSearchParams({
@@ -37,7 +43,7 @@ export function useThieuNhiList({ classId, search, trangThai, page, includeAtten
         trangThai: trangThai === 'tat_ca' ? '' : trangThai,
         includeAttendance: String(includeAttendance),
       });
-      return apiClient.get<DoanSinhPage>(`/doan-sinh?${params.toString()}`);
+      return apiClient.get<ThieuNhiPage>(`/thieu-nhi?${params.toString()}`);
     },
     placeholderData: (previous) => previous,
   });

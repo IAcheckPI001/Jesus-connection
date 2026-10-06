@@ -20,12 +20,11 @@ export type DoanSinhListItem = {
   tenThanh: string | null;
   ho: string;
   ten: string;
-  ngaySinh: string | null;
+  ngaySinh: string;
   gioiTinh: gioi_tinh_enum;
   trangThai: trang_thai_sinh_hoat_enum;
   doiLabel: string | null;
   chiDoanId: string;
-  lopTen: string;
   attendance: Record<string, string | null>;
   scores: {
     behavior: number | null;
@@ -54,6 +53,6 @@ export type DoanSinhListParams = {
   page: number;
   pageSize: number;
   search: string;
-  trangThai: trang_thai_sinh_hoat_enum | null;
+  status: string | null;
   includeAttendance: boolean;
 };

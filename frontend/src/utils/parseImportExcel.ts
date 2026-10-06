@@ -2,6 +2,7 @@
 
 import * as XLSX from 'xlsx';
 import type { ImportPreviewRow, ImportRowFieldError } from '../types/importFile';
+import { isValidIsoDate } from './thieuNhi';
 
 /**
  * Tên cột bắt buộc phải có trong file Excel. So khớp không phân biệt
@@ -16,8 +17,7 @@ export type ParseExcelResult =
 
 /**
  * Chuẩn hóa tên cột để so sánh: bỏ khoảng trắng đầu/cuối, viết thường.
- * Tách hàm riêng vì logic này dùng lại ở nhiều chỗ (so khớp header,
- * sau này backend cũng cần làm y hệt).
+ * Tách hàm riêng để dùng nhất quán khi so khớp các header trong file.
  */
 function normalizeHeaderName(header: string): string {
   return header.trim().toLowerCase();
@@ -69,22 +69,10 @@ function parseExcelDateCell(cellValue: unknown): string | null {
  * (chặn trường hợp như 2008-02-30 — regex ở trên chỉ kiểm tra ĐÚNG
  * ĐỊNH DẠNG, không kiểm tra ngày đó có thật hay không).
  */
-function isRealCalendarDate(iso: string): boolean {
-  const match = iso.match(/^(\d{4})-(\d{2})-(\d{2})$/);
-  if (!match) return false;
-  const [, y, m, d] = match.map(Number) as unknown as [number, number, number, number];
-  const date = new Date(Date.UTC(y, m - 1, d));
-  return (
-    date.getUTCFullYear() === y &&
-    date.getUTCMonth() === m - 1 &&
-    date.getUTCDate() === d
-  );
-}
-
 /**
  * Validate các trường bắt buộc của 1 dòng, trả về danh sách lỗi
  * (rỗng nếu dòng hợp lệ). Đây là bản validate PHÍA FRONTEND, chỉ để
- * phản hồi nhanh — backend ở bước sau sẽ chạy lại đúng các rule này
+ * phản hồi nhanh — backend cũng chạy lại các rule này
  * một lần nữa, không tin kết quả validate của frontend.
  */
 export function validateRequiredFieldsForRow(row: {
@@ -106,7 +94,7 @@ export function validateRequiredFieldsForRow(row: {
   }
   if (!row.ngaySinh) {
     errors.push({ field: 'ngaySinh', message: 'Ngày sinh không hợp lệ' });
-  } else if (!isRealCalendarDate(row.ngaySinh)) {
+  } else if (!isValidIsoDate(row.ngaySinh)) {
     errors.push({ field: 'ngaySinh', message: 'Ngày sinh không hợp lệ' });
   }
 
@@ -114,8 +102,8 @@ export function validateRequiredFieldsForRow(row: {
 }
 
 /**
- * Tìm các dòng trùng NHAU TRONG CÙNG FILE (chưa đối chiếu với DB —
- * việc đó cần gọi backend, làm ở bước sau). Quy tắc trùng: khớp họ
+ * Tìm sớm các dòng trùng NHAU TRONG CÙNG FILE; backend tính lại kết quả
+ * preview trước khi trả cho giao diện. Quy tắc trùng: khớp họ
  * VÀ tên (không phân biệt hoa thường/khoảng trắng thừa), HOẶC khớp
  * ngày sinh.
  *
@@ -248,7 +236,7 @@ export async function parseImportExcel(file: File): Promise<ParseExcelResult> {
         soDienThoai: getCell(columnIndexes.soDienThoai),
         fieldErrors: validateRequiredFieldsForRow({ tenThanh, ho, ten, ngaySinh }),
         removed: false,
-        dbDuplicate: null, // sẽ điền ở bước gọi backend (bước sau)
+        dbDuplicate: null, // backend preview sẽ điền kết quả đối chiếu trong lớp
       };
     });
 

@@ -4,15 +4,16 @@ import { validateSelectedFile } from '../../../utils/importFileValidation';
 import { parseImportExcel } from '../../../utils/parseImportExcel';
 import { IMPORT_STEP, type ImportStep, type ImportPreviewRow } from '../../../types/importFile';
 import { IMPORT_FILE_CONSTRAINTS } from '../../../constants/importFile';
+import { importService } from '../../../services/importService';
 import ImportPreviewTable from './ImportPreviewTable';
-import styles from './ImportExcelModal.module.css';
+import styles from './ImportExcelModal.module.scss';
 
 type ImportExcelModalProps = {
   classId: string;
   onClose: () => void;
 };
 
-function ImportExcelModal({ onClose }: ImportExcelModalProps) {
+function ImportExcelModal({ classId, onClose }: ImportExcelModalProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [fileError, setFileError] = useState<string | null>(null);
   const [headerError, setHeaderError] = useState<string | null>(null);
@@ -51,7 +52,7 @@ function ImportExcelModal({ onClose }: ImportExcelModalProps) {
   }
 
   async function handleContinue() {
-    if (!selectedFile) return;
+    if (!selectedFile || !classId) return;
 
     setStep(IMPORT_STEP.DANG_DOC);
     setHeaderError(null);
@@ -70,11 +71,26 @@ function ImportExcelModal({ onClose }: ImportExcelModalProps) {
         setStep(IMPORT_STEP.CHON_FILE);
         return;
       }
+      if (result.rows.length > IMPORT_FILE_CONSTRAINTS.maxRows) {
+        setHeaderError(`File vượt quá ${IMPORT_FILE_CONSTRAINTS.maxRows} dòng tối đa`);
+        setStep(IMPORT_STEP.CHON_FILE);
+        return;
+      }
 
-      setRows(result.rows);
+      const preview = await importService.preview(classId, result.rows.map((row) => ({
+        rowId: row.rowId,
+        originalExcelRow: row.originalExcelRow,
+        tenThanh: row.tenThanh,
+        ho: row.ho,
+        ten: row.ten,
+        ngaySinh: row.ngaySinh,
+        doi: row.doi,
+        soDienThoai: row.soDienThoai,
+      })));
+      setRows(preview.items);
       setStep(IMPORT_STEP.XEM_TRUOC);
     } catch {
-      setHeaderError('Không đọc được file, vui lòng kiểm tra lại định dạng');
+      setHeaderError('Không thể đọc file hoặc kiểm tra dữ liệu với máy chủ. Vui lòng thử lại.');
       setStep(IMPORT_STEP.CHON_FILE);
     }
   }
@@ -150,7 +166,7 @@ function ImportExcelModal({ onClose }: ImportExcelModalProps) {
             onRowsChange={setRows}
             onCancel={onClose}
             onConfirm={() => {
-              // Bước sau: gửi rows (đã lọc bỏ removed=true) + file gốc lên backend
+              // Bước commit chưa triển khai; backend phải validate lại các dòng cuối cùng.
             }}
           />
         )}

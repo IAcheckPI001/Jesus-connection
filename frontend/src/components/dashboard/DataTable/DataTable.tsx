@@ -6,7 +6,6 @@ export type DataTableColumn<T> = {
   key: string;
   header: string;
   render: (row: T) => ReactNode;
-  hideWhenSingleClass?: boolean;
   group?: { id: string; title: string; expanded: boolean; onToggle: () => void };
 };
 
@@ -18,7 +17,6 @@ type DataTableProps<T> = {
   error?: string | null;
   onRetry?: () => void;
   emptyMessage?: string;
-  showClassColumn?: boolean;
 };
 
 function DataTable<T>({
@@ -29,11 +27,8 @@ function DataTable<T>({
   error = null,
   onRetry,
   emptyMessage = 'Không có dữ liệu',
-  showClassColumn = true,
 }: DataTableProps<T>) {
-  const visibleColumns = columns.filter(
-    (column) => !column.hideWhenSingleClass || showClassColumn,
-  );
+  const visibleColumns = columns;
   const columnCount = Math.max(visibleColumns.length, 1);
   const groups = visibleColumns.reduce<{ id: string; title: string; expanded: boolean; onToggle: () => void; count: number }[]>((result, column) => {
     const group = column.group;

@@ -15,14 +15,14 @@ export type ThieuNhiListItem = {
   tenThanh: string | null;
   ho: string;
   ten: string;
-  ngaySinh: string | null;
-  gioiTinh: GioiTinh | null;
+  ngaySinh: string;
+  gioiTinh: GioiTinh;
   doiLabel: string | null;
   chiDoanId: string;
-  lopTen: string;
   trangThai: TrangThaiSinhHoat;
 };
 
 export type LopOption = { id: string; ten: string };
 export type ThieuNhiStats = { siSo: number; nu: number; nam: number };
 export type TrangThaiFilter = TrangThaiSinhHoat | 'tat_ca';
+

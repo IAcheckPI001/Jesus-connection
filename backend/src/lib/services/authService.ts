@@ -11,17 +11,3 @@ export async function findUserByPhone(phone: string) {
     },
   });
 }
-
-// Tìm 1 user theo id
-export async function findUserById(id: string) {
-  return prisma.tai_khoan.findUnique({
-    where: { id },
-  });
-}
-
-// Lấy danh sách, có thể kèm quan hệ (join) nếu model có liên kết
-export async function getAllUsers() {
-  return prisma.tai_khoan.findMany({
-    orderBy: { ngay_khoi_tao: 'desc' },
-  });
-}

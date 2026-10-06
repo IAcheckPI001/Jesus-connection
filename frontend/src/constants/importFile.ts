@@ -8,6 +8,9 @@ export const IMPORT_FILE_CONSTRAINTS = {
   // chặn sớm để không phải upload file nặng rồi mới báo lỗi
   maxSizeBytes: 2 * 1024 * 1024,
 
+  // Giới hạn preview đồng nhất với backend để payload và đối chiếu DB có giới hạn.
+  maxRows: 500,
+
   // Kiểu MIME "chuẩn" của file .xlsx. Lưu ý: trình duyệt/hệ điều hành đôi khi
   // báo sai kiểu MIME (ví dụ Windows có lúc báo application/vnd.ms-excel cho
   // cả file .xlsx mới), nên KHÔNG dùng để chặn cứng — chỉ tham khảo, việc

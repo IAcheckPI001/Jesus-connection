@@ -1,8 +1,6 @@
 import { Prisma } from '@/src/generated/prisma/client';
 import { prisma } from '@/src/lib/prisma';
-import type { DoanSinhListResponse } from '@/src/types/doan-sinh';
-
-const PAGE_SIZE = 8;
+import type { ChiDoanOption, DoanSinhListParams, DoanSinhListResponse } from '@/src/types/thieu-nhi';
 
 function folded(value: string) {
   return `translate(regexp_replace(normalize(lower(${value}), NFD), '[' || chr(768) || '-' || chr(879) || ']', '', 'g'), 'đ', 'd')`;
@@ -19,7 +17,7 @@ function upcomingSunday(from = new Date()) {
   return date;
 }
 
-export async function listChiDoanOptions(allowedIds: string[] | null) {
+export async function listChiDoanOptions(allowedIds: string[] | null): Promise<ChiDoanOption[]> {
   const classes = await prisma.chi_doan.findMany({
     where: allowedIds ? { id: { in: allowedIds } } : undefined,
     orderBy: [{ ten_chi_doan: 'asc' }, { id: 'asc' }],
@@ -29,20 +27,13 @@ export async function listChiDoanOptions(allowedIds: string[] | null) {
 }
 
 export async function listDoanSinh({
-  classId, page, search, status, includeAttendance,
-}: {
-  classId: string;
-  page: number;
-  search: string;
-  status: string | null;
-  includeAttendance: boolean;
-}): Promise<DoanSinhListResponse> {
+  classId, page, pageSize, search, status, includeAttendance,
+}: DoanSinhListParams): Promise<DoanSinhListResponse> {
   const searchTokens = search.trim().toLocaleLowerCase('vi').split(/\s+/).filter(Boolean).map(foldSearch);
   const baseWhere = { id_chi_doan: classId, ...(status ? { trang_thai: status as never } : {}) };
   let matchingIds: string[] | null = null;
   let total: number;
   let effectivePage: number;
-  const pageSize = PAGE_SIZE;
 
   if (searchTokens.length) {
     const conditions = searchTokens.map((token) => Prisma.sql`(
@@ -65,7 +56,7 @@ export async function listDoanSinh({
     `);
     matchingIds = found.map(({ id }) => id);
   } else {
-    total = await prisma.doan_sinh.count({ where: baseWhere });
+    total = await prisma.thieu_nhi.count({ where: baseWhere });
     const totalPages = Math.ceil(total / pageSize);
     effectivePage = Math.min(Math.max(1, page), Math.max(1, totalPages));
   }
@@ -73,7 +64,7 @@ export async function listDoanSinh({
   const totalPages = Math.ceil(total / pageSize);
   const ids = matchingIds
     ? matchingIds
-    : (await prisma.doan_sinh.findMany({
+    : (await prisma.thieu_nhi.findMany({
       where: baseWhere,
       orderBy: [{ ho: 'asc' }, { ten: 'asc' }, { id: 'asc' }],
       skip: (effectivePage - 1) * pageSize,
@@ -81,18 +72,17 @@ export async function listDoanSinh({
       select: { id: true },
     })).map(({ id }) => id);
 
-  const [rows, siSo, nu, nam, classInfo, latestSessions] = await Promise.all([
-    prisma.doan_sinh.findMany({
+  const [rows, siSo, nu, nam, latestSessions] = await Promise.all([
+    prisma.thieu_nhi.findMany({
       where: { id: { in: ids } },
       include: {
-        doi_nhom_doan_sinh_id_doi_nhomTodoi_nhom: { select: { ten_doi: true } },
+        doi_nhom_thieu_nhi_id_doi_nhomTodoi_nhom: { select: { ten_doi: true } },
         diem_danh: { include: { buoi_sinh_hoat: { select: { id: true, ngay_sinh_hoat: true } } } },
       },
     }),
-    prisma.doan_sinh.count({ where: { id_chi_doan: classId, trang_thai: 'dang_sinh_hoat' } }),
-    prisma.doan_sinh.count({ where: { id_chi_doan: classId, trang_thai: 'dang_sinh_hoat', gioi_tinh: 'nu' } }),
-    prisma.doan_sinh.count({ where: { id_chi_doan: classId, trang_thai: 'dang_sinh_hoat', gioi_tinh: 'nam' } }),
-    prisma.chi_doan.findUnique({ where: { id: classId }, select: { ten_chi_doan: true } }),
+    prisma.thieu_nhi.count({ where: { id_chi_doan: classId, trang_thai: 'dang_sinh_hoat' } }),
+    prisma.thieu_nhi.count({ where: { id_chi_doan: classId, trang_thai: 'dang_sinh_hoat', gioi_tinh: 'nu' } }),
+    prisma.thieu_nhi.count({ where: { id_chi_doan: classId, trang_thai: 'dang_sinh_hoat', gioi_tinh: 'nam' } }),
     includeAttendance ? prisma.buoi_sinh_hoat.findMany({
       where: { id_chi_doan: classId, ngay_sinh_hoat: { lte: new Date() }, diem_danh: { some: {} } },
       orderBy: { ngay_sinh_hoat: 'desc' }, take: 52,
@@ -117,9 +107,8 @@ export async function listDoanSinh({
       ngaySinh: row.ngay_sinh.toISOString().slice(0, 10),
       gioiTinh: row.gioi_tinh,
       trangThai: row.trang_thai,
-      doiLabel: row.doi_nhom_doan_sinh_id_doi_nhomTodoi_nhom?.ten_doi ?? null,
+      doiLabel: row.doi_nhom_thieu_nhi_id_doi_nhomTodoi_nhom?.ten_doi ?? null,
       chiDoanId: classId,
-      lopTen: classInfo?.ten_chi_doan ?? '',
       attendance: Object.fromEntries(columns.map(({ id }) => [id,
         sessionIds.has(row.diem_danh?.id_buoi_sinh_hoat ?? '') && row.diem_danh?.id_buoi_sinh_hoat === id
           ? row.diem_danh.trang_thai ?? null

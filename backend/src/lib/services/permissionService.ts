@@ -7,7 +7,7 @@ import {
   GLOBAL_READ_ROLES,
   ROLES,
   ROLES_WITHOUT_CLASS_ASSIGNMENTS,
-} from '../constants/roles';
+} from '@/src/lib/constants/roles';
 
 export type ResolvedPermission = {
   roles: string[];
@@ -15,8 +15,6 @@ export type ResolvedPermission = {
   viewableClasses: string[];
   editableClasses: string[];
   canViewAllChildren: boolean;
-  canManageAllChildren: boolean;
-  canViewPersonnel: boolean;
 };
 
 export async function resolvePermissions(taiKhoanId: string): Promise<ResolvedPermission> {
@@ -41,8 +39,6 @@ export async function resolvePermissions(taiKhoanId: string): Promise<ResolvedPe
     viewableClasses: [],
     editableClasses: [],
     canViewAllChildren: false,
-    canManageAllChildren: false,
-    canViewPersonnel: false,
   };
   if (!nhanSu) return emptyPermissions;
 
@@ -101,7 +97,5 @@ export async function resolvePermissions(taiKhoanId: string): Promise<ResolvedPe
     viewableClasses,
     editableClasses: assignedClasses,
     canViewAllChildren,
-    canManageAllChildren: managesAllChildren,
-    canViewPersonnel: hasGlobalReadRole || managesAllChildren,
   };
 }

@@ -15,7 +15,7 @@ type MobileDrawerProps = {
 function MobileDrawer({ onClose }: MobileDrawerProps) {
   const { user, logout } = useAuth();
   const drawerRef = useRef<HTMLElement>(null);
-  const name = user?.ho_ten || user?.ten_thanh || user?.so_dien_thoai || 'Tài khoản';
+  const name = user?.hoTen || user?.tenThanh || user?.soDienThoai || 'Tài khoản';
   const roleLabel = user?.roles.join(', ') || 'Thành viên';
 
   useEffect(() => {

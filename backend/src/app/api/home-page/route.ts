@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
+import type { HomePage } from '@/src/types/home-page';
 
 export async function GET() {
-  const data = [
+  const data: HomePage[] = [
     {
       id: 1,
       week: 39,

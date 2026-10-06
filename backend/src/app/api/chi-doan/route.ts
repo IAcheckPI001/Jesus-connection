@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { canPerformClassAction } from '@/src/lib/permissions/classPermission';
+import { canViewClass } from '@/src/lib/permissions/classPermission';
 import { requireAuth } from '@/src/lib/session/requireAuth';
 import { listChiDoanOptions } from '@/src/lib/services/doanSinhService';
 
@@ -11,7 +11,7 @@ export async function GET() {
       return NextResponse.json({ items: [] });
     }
     const items = await listChiDoanOptions(permission.canViewAllChildren ? null : permission.viewableClasses);
-    const authorized = items.filter((item) => canPerformClassAction(permission, item.id, 'view'));
+    const authorized = items.filter((item) => canViewClass(permission, item.id));
     return NextResponse.json({ items: authorized });
   } catch (error) {
     console.error('GET /api/chi-doan failed', error);

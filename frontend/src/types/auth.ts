@@ -7,9 +7,9 @@ export type LoginCredentials = {
 
 export type AuthUser = {
   id: string;
-  so_dien_thoai: string;
-  ten_thanh: string;
-  ho_ten: string | null;
+  soDienThoai: string;
+  tenThanh: string;
+  hoTen: string | null;
   roles: string[];
   assignedClasses: string[];
 };

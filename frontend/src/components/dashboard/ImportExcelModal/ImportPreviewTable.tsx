@@ -3,7 +3,7 @@
 // src/components/dashboard/ImportExcelModal/ImportPreviewTable.tsx
 import type { ImportPreviewRow } from '../../../types/importFile';
 import { validateRequiredFieldsForRow } from '../../../utils/parseImportExcel';
-import styles from './ImportPreviewTable.module.css';
+import styles from './ImportPreviewTable.module.scss';
 
 type ImportPreviewTableProps = {
   rows: ImportPreviewRow[];
@@ -40,7 +40,7 @@ function ImportPreviewTable({
       rows.map((row) => {
         if (row.rowId !== rowId) return row;
 
-        const updated = { ...row, [field]: value };
+        const updated = { ...row, [field]: value, dbDuplicate: null, duplicateInFile: null };
 
         // Chỉ 4 field bắt buộc mới cần validate lại
         if (

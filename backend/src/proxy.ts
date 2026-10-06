@@ -1,7 +1,7 @@
 
 
 import { NextRequest, NextResponse } from 'next/server';
-import { isOriginAllowed } from './lib/config/cors.config';
+import { isOriginAllowed } from '@/src/lib/config/cors.config';
 
 export function proxy(request: NextRequest) {
   const origin = request.headers.get('origin');

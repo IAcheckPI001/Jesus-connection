@@ -62,7 +62,13 @@ export type ImportPreviewRow = {
   // nhưng để sẵn cấu trúc)
   removed: boolean;
 
-  // Sẽ được điền ở bước sau (gọi API backend), tạm để null —
+  // Được backend preview điền sau khi đối chiếu trong lớp —
   // đại diện cho việc dòng này trùng với dữ liệu ĐÃ CÓ trong DB
   dbDuplicate: { existingId: string; existingLabel: string; reason: string } | null;
 };
+
+export type ImportPreviewRequestRow = Pick<ImportPreviewRow,
+  'rowId' | 'originalExcelRow' | 'tenThanh' | 'ho' | 'ten' | 'ngaySinh' | 'doi' | 'soDienThoai'
+>;
+
+export type ImportPreviewResponse = { items: ImportPreviewRow[] };

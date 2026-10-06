@@ -7,7 +7,7 @@ import styles from './ClassPicker.module.scss';
 
 type ClassPickerProps = {
   options: LopOption[];
-  selectedId: string;
+  selectedId: string | null;
   onChange: (id: string) => void;
   isLoading?: boolean;
 };

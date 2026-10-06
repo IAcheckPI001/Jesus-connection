@@ -1,7 +1,7 @@
 
-import { getSessionToken } from './sessionCookie';
-import { getSessionByToken } from '../services/sessionService';
-import { resolvePermissions } from '../services/permissionService';
+import { getSessionToken } from '@/src/lib/session/sessionCookie';
+import { getSessionByToken } from '@/src/lib/services/sessionService';
+import { resolvePermissions } from '@/src/lib/services/permissionService';
 
 export async function requireAuth() {
   const token = await getSessionToken();
